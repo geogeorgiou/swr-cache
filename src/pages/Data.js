@@ -25,14 +25,26 @@ const Data = () => {
 };
 
 const DataContent = () => {
-  const { data } = useSWR(`/brewery`, dataApi.getBrewery, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    refreshWhenOffline: false,
-    shouldRetryOnError: false,
-    suspense: true,
-    revalidateOnMount: true,
-  });
+  const { data, isFetching, isLoading } = useSWR(
+    `/brewery`,
+    dataApi.getBrewery,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      refreshWhenOffline: false,
+      shouldRetryOnError: true,
+      suspense: false,
+      revalidateOnMount: true,
+    }
+  );
+
+  if (isLoading || isFetching) {
+    return <>Loading...</>;
+  }
+
+  if (!data) {
+    throw new Error("Data is not loaded");
+  }
 
   return (
     <>
